@@ -43,10 +43,6 @@ const services = [
     icon: web,
   },
   {
-    title: "AI/ML Engineer",
-    icon: mobile,
-  },
-  {
     title: "Backend Developer",
     icon: backend,
   },
@@ -69,6 +65,10 @@ const services = [
   {
     title: "Data Science",
     icon: creator,
+  },
+  {
+    title: "AI/ML Engineer",
+    icon: mobile,
   },
 ];
 
