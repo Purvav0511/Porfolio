@@ -1,44 +1,28 @@
-import { motion } from 'framer-motion';
-import { styles } from '../styles';
-import ComputersCanvas from './canvas/ComputersCanvas';
+import { profile } from '../data/content'
+import { HeroCard } from './PlayerCard'
 
-
-const Hero = () => {
+export default function Hero() {
+  const toSummary = () => document.getElementById('summary')?.scrollIntoView({ behavior: 'smooth' })
   return (
-    <section className="relative w-full h-screen mx-auto">
-      <div className={`${styles.paddingX} absolute inset-0 top-[120px] max-w-7xl mx-auto flex flex-row items-start gap-5`}>
-
-        <div className="flex flex-col justify-center items-center mt-5">
-          <div className="w-5 h-5 rounded-full bg-[#9153ff]"/>
-          <div className="w-1 sm:h-80 h-40 violet-gradient" />
+    <div className="wrap hero" id="hero">
+      <div>
+        <div className="eyebrow">Software · Data · ML Engineer</div>
+        <h1>{profile.first} <span>{profile.last}</span></h1>
+        <div className="roles">{profile.roles.map(r => <span key={r}>{r}</span>)}</div>
+        <p className="lede">{profile.lede}</p>
+        <div className="cta">
+          <a className="btn gold" href={profile.resume} download>Download résumé</a>
+          <a className="btn" href="#contact">Get in touch</a>
         </div>
-        <div>
-        <h1 className={`${styles.heroHeadText}`}>Hi, I am <span className="text-[#915eff]">Purvav</span></h1>
-        <p className={`${styles.heroSubText} mt-2 text-white-100`}>  Unlocking Possibilities through Data and Code: <br className="sm:block hideen"/> Exploring the Fusion of Data Science and Software Engineering.</p>
-        </div>
-      </div>
-      <ComputersCanvas />
-
-      <div className="absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center">
-        <a href="#about">
-          <div className="w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2">
-            <motion.div 
-            animate={{
-              y: [0,24, 0]
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              repeatType: 'loop'
-            }}
-            className="w-3 h-3 rounded-full bg-secondary mb-1"
-            />
-          </div>
-        </a>
+        <div className="status"><span className="dot" />{profile.status}</div>
       </div>
 
-    </section>
+      <div className="card-stage">
+        <div className="aura" />
+        <div className="flare" />
+        <div className="float"><HeroCard onActivate={toSummary} /></div>
+        <div className="tap-hint" aria-hidden="true">Tap the card</div>
+      </div>
+    </div>
   )
 }
-
-export default Hero

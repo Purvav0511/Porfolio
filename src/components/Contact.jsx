@@ -1,118 +1,83 @@
-import { useState, useRef} from 'react';
-import { motion } from 'framer-motion';
-import emailjs from '@emailjs/browser';
-import { styles } from '../styles';
-import { EarthCanvas } from './canvas';
-import { SectionWrapper } from '../hoc';
-import { slideIn } from '../utils/motion';
+import { useState } from 'react'
+import emailjs from '@emailjs/browser'
+import { profile } from '../data/content'
+import { Icon, LinkedInIcon, GitHubIcon } from './Icons'
 
-// template_nl6vaz6
+// EmailJS IDs are public client-side identifiers.
+const EMAILJS = { service: 'service_re5r8bn', template: 'template_nl6vaz6', publicKey: 'wxDMI28llm-wPZRnn' }
+const ROLES = ['Software Engineer', 'Data Engineer', 'ML Engineer', 'Something else']
+const empty = { name: '', email: '', company: '', role: ROLES[0], message: '' }
 
-//service_vgf72m4
+export default function Contact() {
+  const [form, setForm] = useState(empty)
+  const [sending, setSending] = useState(false)
+  const [toast, setToast] = useState(null)
 
-//wxDMI28llm-wPZRnn
-
-const Contact = () => {
-
-  const formRef = useRef();
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setForm({ ...form, [name]: value })
+  const update = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+  const notify = (text, err = false) => {
+    setToast({ text, err })
+    setTimeout(() => setToast(null), 4000)
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    emailjs.send("service_vgf72m4", 
-    "template_nl6vaz6",
-    {
-      from_name: form.name,
-      to_name: "Purvav",
-      from_email: form.email,
-      to_email: "psp8474@nyu.edu",
-      message: form.message
-    },
-    "wxDMI28llm-wPZRnn"
-    )
-    .then(() => {
-      setLoading(false);
-      alert("Thank you for reaching out. Your email has been sent.");
-      setForm({
-        name: "",
-        email: "",
-        message: "",
-      })
-    }, (error) => {
-      setLoading(false)
-      console.log(error)
-      alert("Something went wrong.")
-    })
+  const submit = async e => {
+    e.preventDefault()
+    setSending(true)
+    try {
+      await emailjs.send(EMAILJS.service, EMAILJS.template, {
+        from_name: form.name,
+        from_email: form.email,
+        to_name: profile.first,
+        message: `Company: ${form.company || '—'}\nRole: ${form.role}\n\n${form.message}`,
+      }, { publicKey: EMAILJS.publicKey })
+      setForm(empty)
+      notify('Thanks, your message is on its way. I’ll reply soon.')
+    } catch (err) {
+      console.error('EmailJS send failed', err?.status, err?.text ?? err)
+      notify(`Couldn’t send right now. Email me at ${profile.email}.`, true)
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
-    <div className="xl:mt-12 xl:flex-row flex-col-reverse flex gap-10 overflow-hidden">
-      <motion.div
-      variants={slideIn('left', "tween", 0.2, 1)}
-      className="flex-[0.75] bg-black-100 p-8 rounded-2xl">
-        <p className={styles.sectionSubText}>Get in touch</p>
-        <h3 className={styles.sectionHeadText}>Contact.</h3>
-
-        <form
-        ref={formRef}
-        onSubmit={handleSubmit}
-        className="mt-12 flex flex-col gap-8">
-          <label className="flex flex-col">
-            <span className="text-white font-medium mb-4">Your Name</span>
-            <input 
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="What's your name?"
-            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-whit rounded-lg outlined-none border-none font-medium"/>
-          </label>
-          <label className="flex flex-col">
-            <span className="text-white font-medium mb-4">Your Email</span>
-            <input 
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="What's your email?"
-            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-whit rounded-lg outlined-none border-none font-medium"/>
-          </label>
-          <label className="flex flex-col">
-            <span className="text-white font-medium mb-4">Your Message</span>
-            <textarea 
-            rows="7"
-            name="message"
-            value={form.message}
-            onChange={handleChange}
-            placeholder="What's on your mind?"
-            className="bg-tertiary py-4 px-6 placeholder:text-secondary text-whit rounded-lg outlined-none border-none font-medium"/>
-          </label>
-          <button
-          type="submit"
-          className="bg-tertiary py-3 px-8 outline-none w-fit text-white font-bold shadow-md shadow-primary rounded-xl">{ loading ? 'Sending...' : 'Send' }</button>
-        </form>
-      </motion.div>
-
-      <motion.div
-      variants={slideIn("right", "tween", 0.2, 1)}
-      className="xl:flex-1 xl:h-auto md:h-[550px] h-[350px]">
-        <EarthCanvas />
-      </motion.div>
-    </div>
+    <section id="contact">
+      <div className="wrap">
+        <div className="eyebrow rv">Transfer window: open</div>
+        <h2 className="title rv">Let&apos;s talk</h2>
+        <p className="sub rv">Hiring for a Software, Data, or ML Engineering role? Send a note and I&apos;ll get back to you.</p>
+        <div className="contact">
+          <div className="panel direct rv">
+            <a href={`mailto:${profile.email}`}>
+              <span className="ic"><Icon name="mail" /></span>
+              <span><small>Email</small><strong>{profile.email}</strong></span>
+            </a>
+            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+              <span className="ic"><LinkedInIcon /></span>
+              <span><small>LinkedIn</small><strong>{profile.linkedin.replace('https://', '')}</strong></span>
+            </a>
+            <a href={profile.github} target="_blank" rel="noopener noreferrer">
+              <span className="ic"><GitHubIcon /></span>
+              <span><small>GitHub</small><strong>{profile.github.replace('https://', '')}</strong></span>
+            </a>
+            <div className="resp"><span className="dot" />Usually replies within 24 hours</div>
+          </div>
+          <form className="panel msg rv" onSubmit={submit}>
+            <div><label htmlFor="f-name">Name</label><input id="f-name" name="name" value={form.name} onChange={update} required autoComplete="name" /></div>
+            <div><label htmlFor="f-email">Work email</label><input id="f-email" name="email" type="email" value={form.email} onChange={update} required autoComplete="email" /></div>
+            <div><label htmlFor="f-co">Company</label><input id="f-co" name="company" value={form.company} onChange={update} autoComplete="organization" /></div>
+            <div>
+              <label htmlFor="f-role">Role</label>
+              <select id="f-role" name="role" value={form.role} onChange={update}>{ROLES.map(r => <option key={r}>{r}</option>)}</select>
+            </div>
+            <div className="full"><label htmlFor="f-msg">Message</label><textarea id="f-msg" name="message" value={form.message} onChange={update} required /></div>
+            <div className="full row-end">
+              <span className="note">Goes straight to my inbox.</span>
+              <button className="btn gold" type="submit" disabled={sending}>{sending ? 'Sending…' : 'Send message'}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div className={`toast${toast ? ' show' : ''}${toast?.err ? ' err' : ''}`} role="status" aria-live="polite">{toast?.text}</div>
+    </section>
   )
 }
-
-export default SectionWrapper(Contact, "contact")
