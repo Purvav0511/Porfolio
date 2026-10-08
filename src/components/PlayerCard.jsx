@@ -89,7 +89,7 @@ export function MiniCard({ item, selected, onSelect }) {
         </div>
         <div className="logo">
           {item.logo
-            ? <span><img src={item.logo} alt="" loading="lazy" /></span>
+            ? <span><img src={item.logo} alt="" loading="lazy" className={item.logoFill ? 'fill' : undefined} /></span>
             : <span className="mono">{item.mono}</span>}
         </div>
         <div className="pc-name">

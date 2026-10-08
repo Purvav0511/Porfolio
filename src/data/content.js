@@ -1,6 +1,10 @@
 // All site copy lives here. Edit this file to update the portfolio.
 import highradius from '../assets/logos/highradius.png'
 import grroom from '../assets/logos/grroom.png'
+import leidos from '../assets/logos/leidos.svg'
+import greenportfolio from '../assets/logos/greenportfolio.png'
+import nyu from '../assets/logos/nyu.svg'
+import kiit from '../assets/logos/kiit.svg'
 
 export const profile = {
   first: 'Purvav',
@@ -49,7 +53,7 @@ export const strengths = [
 // Experience, rendered as a squad. line: Now | Then | Academy
 export const squad = [
   {
-    line: 'Now', tier: 'gold', pos: 'DE', sub: 'SDE', co: 'Leidos', mono: 'L',
+    line: 'Now', tier: 'gold', pos: 'DE', sub: 'SDE', co: 'Leidos', logo: leidos,
     role: 'Software Engineer', when: 'Sep 2024 — Present', foot: '2024 — Now',
     title: 'Software Engineer · Data Architect/Engineer', org: 'Leidos Inc. · SSA Anti-Fraud program',
     points: [
@@ -62,7 +66,7 @@ export const squad = [
     stack: ['Python', 'AWS', 'Athena', 'Airflow', 'Lambda', 'Greenplum', 'Postgres', 'SQL Server'],
   },
   {
-    line: 'Then', tier: 'silver', pos: 'DS', sub: 'ETL · ML', co: 'GreenPortfolio', mono: 'GP',
+    line: 'Then', tier: 'silver', pos: 'DS', sub: 'ETL · ML', co: 'GreenPortfolio', logo: greenportfolio, logoFill: true,
     role: 'Data Science Intern', when: 'Oct 2023 — Apr 2024', foot: '2023 — 24',
     title: 'Data Science Intern', org: 'GreenPortfolio · NYC climate-fintech',
     points: [
@@ -91,7 +95,7 @@ export const squad = [
     stack: ['Python', 'YOLO', 'Computer vision'],
   },
   {
-    line: 'Academy', tier: 'teal', pos: 'MS', sub: 'COMP ENG', co: 'NYU', mono: 'NYU',
+    line: 'Academy', tier: 'teal', pos: 'MS', sub: 'COMP ENG', co: 'NYU', logo: nyu,
     role: 'M.S. Computer Engineering', when: 'Sep 2022 — May 2024', foot: 'GPA 3.82',
     title: 'M.S. Computer Engineering', org: 'New York University · Merit Scholarship',
     points: [
@@ -102,7 +106,7 @@ export const squad = [
     stack: ['Networking', 'Machine learning', 'Distributed systems'],
   },
   {
-    line: 'Academy', tier: 'teal', pos: 'BTECH', sub: 'CSE', co: 'KIIT', mono: 'KIIT',
+    line: 'Academy', tier: 'teal', pos: 'BTECH', sub: 'CSE', co: 'KIIT', logo: kiit,
     role: 'B.Tech Computer Science', when: 'Jul 2018 — Jun 2022', foot: 'GPA 8.98',
     title: 'B.Tech Computer Science & Engineering', org: 'KIIT University · Bhubaneswar, India',
     points: [

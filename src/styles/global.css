@@ -171,6 +171,7 @@ header .btn{height:40px;padding:0 18px;font-size:13px}
 .mini .logo{flex:1;display:grid;place-items:center}
 .mini .logo span{width:52%;aspect-ratio:1;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden;box-shadow:0 0 0 2px rgba(255,255,255,.15),0 10px 30px rgba(0,0,0,.5)}
 .mini .logo img{width:78%;height:78%;object-fit:contain}
+.mini .logo img.fill{width:100%;height:100%;object-fit:cover}
 .mini .logo .mono{background:var(--metal);color:#0b0a07;font:800 calc(var(--w)*.13)/1 var(--f-display)}
 .mini .pc-name b{font-size:calc(var(--w)*.13)}
 .mini .pc-name span{font-size:calc(var(--w)*.052);letter-spacing:.12em;margin-top:5px;line-height:1.2}
