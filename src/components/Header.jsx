@@ -14,7 +14,7 @@ export default function Header() {
             <a key={l.id} href={`#${l.id}`} className={active === l.id ? 'on' : undefined}>{l.label}</a>
           ))}
         </nav>
-        <a className="btn gold" href="#contact">Hire me</a>
+        <a className="btn gold" href="#contact">Contact me</a>
       </div>
     </header>
   )

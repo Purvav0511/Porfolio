@@ -127,6 +127,13 @@ export const squadLines = [
 // `result` supports a leading bold phrase via **double asterisks**.
 export const projects = [
   {
+    title: 'AI Scout for Recruiters', event: 'This site · 2026', roles: ['SDE', 'MLE'], tint: 'rgba(95,209,139,.4)',
+    text: 'Paste a job description and Claude writes a scouting report: requirements matched with evidence from my record, honest gaps, and interview questions. Runs on a Cloudflare Worker with rate limits, prompt-injection handling, and structured outputs.',
+    result: 'Passes **10/10** eval cases covering fit, honest gaps, seniority, and prompt-injection attempts',
+    stack: 'Claude API · Cloudflare Workers · React',
+    code: 'https://github.com/Purvav0511/Porfolio/tree/main/scout-worker',
+  },
+  {
     title: 'CineFIBO', event: 'Bria FIBO Hackathon · Dec 2025', roles: ['SDE', 'MLE'], tint: 'rgba(255,170,90,.45)',
     text: 'Shot-planning and storyboarding tool for creators. Describe a scene and an OpenAI planner designs the coverage, Bria FIBO renders each frame from structured JSON, and storyboards persist for iteration.',
     result: '**Up to 12-shot** coverage plans; **4 structured controls** (angle, lens, mood, colour) re-render a shot predictably',
@@ -186,6 +193,7 @@ export const navLinks = [
   { id: 'summary', label: 'Summary' },
   { id: 'squad', label: 'Experience' },
   { id: 'highlights', label: 'Projects' },
+  { id: 'scout', label: 'Scout me' },
   { id: 'resume', label: 'Résumé' },
   { id: 'contact', label: 'Contact' },
 ]

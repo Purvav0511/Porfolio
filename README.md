@@ -9,6 +9,7 @@ A night-time football stadium rendered in Three.js sits behind the page. The cam
 - **React 18** + **Vite 5**
 - **Three.js** — custom shader for the pitch markings, floodlights, and camera rig, lazy-loaded after first paint
 - **EmailJS** for the contact form
+- **Claude API** on a **Cloudflare Worker** for the AI scouting report (see [`scout-worker/`](scout-worker/))
 - Plain CSS with design tokens, no UI framework
 - Deployed to **GitHub Pages** by GitHub Actions on every push to `main`
 

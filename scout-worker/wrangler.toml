@@ -1,0 +1,28 @@
+# Cloudflare Worker that turns a pasted job description into a scouting report.
+# Secret (set with `npx wrangler secret put ANTHROPIC_API_KEY`, never committed): ANTHROPIC_API_KEY
+name = "purvav-scout"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+preview_urls = false
+
+[vars]
+ALLOWED_ORIGINS = "https://purvav0511.github.io,http://localhost:5173"
+MODEL = "claude-opus-5-5"
+
+# 5 reports per minute per visitor
+[[ratelimits]]
+name = "PER_IP_LIMITER"
+namespace_id = "1001"
+  [ratelimits.simple]
+  limit = 5
+  period = 60
+
+# 30 reports per minute across everyone, as a backstop on spend
+[[ratelimits]]
+name = "GLOBAL_LIMITER"
+namespace_id = "1002"
+  [ratelimits.simple]
+  limit = 30
+  period = 60
