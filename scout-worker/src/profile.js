@@ -40,6 +40,7 @@ AI fashion startup helping shoppers match outfits.
 - Document Q&A pipeline (2025; Python, LangChain, ChromaDB, FastAPI, OpenAI). Personal project. RAG system ingesting PDF, CSV, DOCX, and JSON with format-specific chunking, incremental ingestion that skips unchanged files, and batched rate-limited embedding; answers through a FastAPI service grounded in retrieved context. No formal evaluation metrics yet.
 - Data Poisoning Detection (NYU paper, Dec 2023; TensorFlow, VGG16, scikit-learn, Docker). Team of 2, co-authored paper. Studied 4 data-poisoning attacks on a VGG16 CIFAR-10 model (poisoned training cut accuracy to as low as 15%); built the baseline, 2 attack pipelines, and Isolation Forest detection (73% accuracy vs 67% for One-Class SVM).
 - Backdoor Defense via Pruning (NYU ML Security, Dec 2023; TensorFlow, Keras). Fine-pruning defense on a backdoored DeepID face-recognition network (1,283 identities); reduced attack success rate from ~100% to 77% while keeping 84.5% clean accuracy.
+- CheapThrills budget trip planner (NYU Big Data course, May 2023; React, Flask, PySpark, MongoDB, PostgreSQL). Team of 5. Travel recommender suggesting destinations from a traveller's dates and budget, built on airfare and points-of-interest datasets; the backend used PySpark (including the MongoDB Spark connector) to load and query the data. Purvav worked with Spark on this academic team project; he has no production Spark experience.
 - This portfolio site (2026; React, Vite, Three.js, Cloudflare Workers, Claude API), including this AI scouting tool.
 
 ## Skills
@@ -58,5 +59,5 @@ Python 6+, ML/AI 5+, SQL 4+, Backend 4+, Data pipelines 3+, AWS 3+.
 - KIIT University (Bhubaneswar, India) — B.Tech Computer Science and Engineering, Jul 2018 – Jun 2022. GPA 8.98/10. Honors in Distributed Algorithms, Software Defined Networks, and Transaction Processing Systems. Minors in FinTech Engineering and Entrepreneurship.
 
 ## Not in the record (state as gaps if a role requires them)
-No listed professional experience with: Kubernetes, Spark, Kafka, Snowflake, dbt, Terraform, Go, Rust, mobile development, or managing people as a formal people manager. Full-time industry experience is 2 years (plus internships); treat senior/staff requirements (e.g. 5+ years) honestly.
+No listed professional experience with: Kubernetes, Kafka, Snowflake, dbt, Terraform, Go, Rust, mobile development, or managing people as a formal people manager. Spark appears only in an academic team project, not in production work. Full-time industry experience is 2 years (plus internships); treat senior/staff requirements (e.g. 5+ years) honestly.
 `.trim()
