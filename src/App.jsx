@@ -1,27 +1,34 @@
-import { BrowserRouter } from "react-router-dom";
-import {About, Contact, Experience, Feedbacks, Hero, Navbar, Tech, Works, StarsCanvas} from './components';
+import PitchBackground from './components/PitchBackground'
+import Header from './components/Header'
+import Hero from './components/Hero'
+import Summary from './components/Summary'
+import Squad from './components/Squad'
+import Highlights from './components/Highlights'
+import Resume from './components/Resume'
+import Contact from './components/Contact'
+import { profile } from './data/content'
+import { useReveal } from './hooks/usePageEffects'
 
-const App = () => {
+export default function App() {
+  useReveal()
   return (
-    <BrowserRouter basename={ import.meta.env.DEV ? '/' : 'Porfolio'}>
-    <div className="relative z-0 bg-primary">
-    <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
-    <Navbar />
-    <Hero />
-    </div>
-    <About />
-    <Experience />
-    <Tech />
-    <Works />
-    <Feedbacks />
-    <div className="relative z-0">
-      <Contact />
-      <StarsCanvas />
-    </div>
-    </div>
-    </BrowserRouter>
-    
+    <>
+      <PitchBackground />
+      <Header />
+      <main>
+        <Hero />
+        <Summary />
+        <Squad />
+        <Highlights />
+        <Resume />
+        <Contact />
+      </main>
+      <footer>
+        <div className="wrap">
+          <span>© {new Date().getFullYear()} {profile.first} {profile.last}</span>
+          <span>Brooklyn, NY · Built with React &amp; Three.js</span>
+        </div>
+      </footer>
+    </>
   )
 }
-
-export default App

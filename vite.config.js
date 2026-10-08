@@ -1,16 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
-  const config = {
-    plugins: [react()],
-    base: '/Porfolio',
-  }
-
-  if (command !== 'serve') {
-    config.base = '/Porfolio/'
-  }
-
-  return config
+// Served from https://purvav0511.github.io/Porfolio/
+export default defineConfig({
+  plugins: [react()],
+  base: '/Porfolio/',
 })

@@ -21,3 +21,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Build output
+dist
+
+# Design prototypes (local only)
+design-explorations
