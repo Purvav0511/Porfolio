@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 const SCOUT_URL = process.env.SCOUT_URL || 'http://localhost:8787'
 const ORIGIN = process.env.SCOUT_ORIGIN || 'http://localhost:5173'
 const cases = JSON.parse(readFileSync(new URL('./cases.json', import.meta.url)))
+  .filter(c => !process.env.CASES || process.env.CASES.split(',').includes(c.id))
 
 const has = (text, pattern) => new RegExp(pattern, 'i').test(text)
 const matchText = r => r.matches.map(m => `${m.requirement} ${m.evidence}`).join(' | ')
@@ -22,6 +23,12 @@ function grade(c, r) {
   for (const p of c.must_gap) if (!has(gapText(r), p)) fails.push(`missing gap: ${p}`)
   // A skill he doesn't have must never show up as a match.
   for (const p of c.must_not_claim) if (r.matches.some(m => has(m.requirement, p) && !has(m.evidence, `no |not |lack`))) fails.push(`claimed absent skill: ${p}`)
+  // Spark may be credited only as academic project work, never as production experience.
+  if (c.spark_must_be_academic) {
+    const spark = r.matches.filter(m => has(`${m.requirement} ${m.evidence}`, 'spark'))
+    if (spark.some(m => !has(`${m.evidence} ${m.source}`, 'academic|course|NYU|CheapThrills|project'))) fails.push('Spark credited without academic framing')
+    if (!spark.length && !has(gapText(r), 'spark')) fails.push('Spark neither matched as academic nor listed as a gap')
+  }
   return fails
 }
 
