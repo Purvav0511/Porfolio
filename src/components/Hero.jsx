@@ -12,7 +12,7 @@ export default function Hero() {
         <p className="lede">{profile.lede}</p>
         <div className="cta">
           <a className="btn gold" href={profile.resume} download>Download résumé</a>
-          <a className="btn" href="#contact">Get in touch</a>
+          <a className="btn" href="#scout">Scout me for your role</a>
         </div>
         <div className="status"><span className="dot" />{profile.status}</div>
       </div>

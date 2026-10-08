@@ -1,0 +1,17 @@
+{
+  "name": "purvav-scout",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "eval": "node evals/run.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.148.0"
+  }
+}
