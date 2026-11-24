@@ -10,12 +10,18 @@ preview_urls = false
 [vars]
 ALLOWED_ORIGINS = "https://purvav0511.github.io,http://localhost:5173"
 MODEL = "claude-opus-5-5"
-# Hard cap on paid Claude calls per UTC day, across all visitors
+# Hard caps on paid Claude calls per UTC day: across all visitors, and per visitor
 DAILY_LIMIT = "150"
+PER_VISITOR_DAILY_LIMIT = "10"
 
-# Daily report counter for DAILY_LIMIT. Wrangler creates the namespace on first deploy.
-[[kv_namespaces]]
-binding = "BUDGET"
+# Atomic daily counters for the caps above (src/budget.js). Durable Objects are on the free plan.
+[[durable_objects.bindings]]
+name = "BUDGET"
+class_name = "Budget"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Budget"]
 
 # 5 reports per minute per visitor
 [[ratelimits]]

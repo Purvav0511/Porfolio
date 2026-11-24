@@ -31,7 +31,12 @@ env:
 jobs:
   workflow-failure:
     name: Alert on failed CI or deploy
-    if: github.event_name == 'workflow_run'
+    # Only trust runs of this repo's own main branch. A fork's PR can have a branch named "main" too,
+    # and must not be able to open fake alerts or close real ones.
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      contains(fromJSON('["push", "workflow_dispatch"]'), github.event.workflow_run.event)
     runs-on: ubuntu-latest
     env:
       WORKFLOW: ${{ github.event.workflow_run.name }}
@@ -58,6 +63,10 @@ jobs:
 
   live-checks:
     name: Live site and Worker checks
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_repository.full_name == github.repository &&
+       contains(fromJSON('["push", "workflow_dispatch"]'), github.event.workflow_run.event))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0

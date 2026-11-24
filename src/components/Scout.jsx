@@ -27,6 +27,7 @@ const ERRORS = {
   not_configured: 'The scout is warming up and isn’t available yet. Check back soon.',
   refused: 'The scout couldn’t write a report for that text. Try pasting just the job description.',
   budget_exhausted: 'The scout has written its reports for today. Try again tomorrow, or reach out below.',
+  visitor_daily_limit: 'You’ve run today’s limit of scouting reports. Try again tomorrow, or reach out below.',
 }
 
 const VERDICT_TONE = { 'Strong fit': 'strong', 'Good fit': 'good', 'Partial fit': 'partial', Stretch: 'stretch' }

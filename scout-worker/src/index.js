@@ -1,9 +1,12 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { SYSTEM, REPORT_SCHEMA } from './prompt.js'
 
+export { Budget } from './budget.js'
+
 const MIN_CHARS = 80
 const MAX_CHARS = 15000
 const DEFAULT_DAILY_LIMIT = 150
+const DEFAULT_PER_VISITOR_DAILY_LIMIT = 10
 
 function corsHeaders(request, env) {
   const origin = request.headers.get('Origin') || ''
@@ -27,16 +30,29 @@ function json(body, status, headers = {}) {
 
 const model = env => env.MODEL || 'claude-opus-5-5'
 const dailyLimit = env => Number(env.DAILY_LIMIT) || DEFAULT_DAILY_LIMIT
-const budgetKey = () => `reports:${new Date().toISOString().slice(0, 10)}`
+const perVisitorLimit = env => Number(env.PER_VISITOR_DAILY_LIMIT) || DEFAULT_PER_VISITOR_DAILY_LIMIT
+const budget = env => env.BUDGET.get(env.BUDGET.idFromName('global'))
 
-// Daily cap on paid Claude calls, so a script that forges the Origin header can't run up the bill.
-// KV counters aren't atomic, so a burst can overshoot slightly; the per-minute limiters bound that.
-async function takeBudget(env) {
-  const key = budgetKey()
-  const used = Number(await env.BUDGET.get(key)) || 0
-  if (used >= dailyLimit(env)) return false
-  await env.BUDGET.put(key, String(used + 1), { expirationTtl: 60 * 60 * 48 })
-  return true
+async function hashVisitor(ip, env) {
+  const data = new TextEncoder().encode(`${env.VISITOR_SALT || 'purvav-scout'}:${ip}`)
+  const digest = await crypto.subtle.digest('SHA-256', data)
+  return [...new Uint8Array(digest)].slice(0, 16).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+// Daily caps on paid Claude calls: a global one so a script forging the Origin header can't run up
+// the bill, and a per-visitor one so a single client can't use up the global cap for everyone.
+// Returns null when the call may proceed, or 'global' / 'visitor' naming the cap that was hit.
+async function takeBudget(env, ip) {
+  const res = await budget(env).fetch('https://budget/take', {
+    method: 'POST',
+    body: JSON.stringify({ visitor: await hashVisitor(ip, env), limit: dailyLimit(env), perVisitor: perVisitorLimit(env) }),
+  })
+  return (await res.json()).denied
+}
+
+async function budgetUsage(env) {
+  const { used } = await (await budget(env).fetch('https://budget/usage')).json()
+  return { used, limit: dailyLimit(env) }
 }
 
 async function scout(jd, env) {
@@ -69,18 +85,18 @@ async function health(env) {
   const { success } = await env.HEALTH_LIMITER.limit({ key: 'all' })
   if (!success) return json({ ok: false, reason: 'rate_limited' }, 429)
 
-  const budget = { used: Number(await env.BUDGET.get(budgetKey())) || 0, limit: dailyLimit(env) }
+  const usage = await budgetUsage(env)
   try {
     const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 1 })
     await client.models.retrieve(model(env))
-    return json({ ok: true, model: model(env), budget }, 200)
+    return json({ ok: true, model: model(env), budget: usage }, 200)
   } catch (err) {
     const reason = err instanceof Anthropic.AuthenticationError ? 'invalid_api_key'
       : err instanceof Anthropic.PermissionDeniedError ? 'permission_denied'
         : err instanceof Anthropic.NotFoundError ? 'model_not_found'
           : 'upstream'
     console.error('Health check failed', reason, err?.status)
-    return json({ ok: false, reason, status: err?.status ?? null, model: model(env), budget }, 503)
+    return json({ ok: false, reason, status: err?.status ?? null, model: model(env), budget: usage }, 503)
   }
 }
 
@@ -111,7 +127,8 @@ export default {
     const perIp = await env.PER_IP_LIMITER.limit({ key: ip })
     const global = await env.GLOBAL_LIMITER.limit({ key: 'all' })
     if (!perIp.success || !global.success) return json({ error: 'rate_limited' }, 429, cors)
-    if (!(await takeBudget(env))) return json({ error: 'budget_exhausted' }, 429, cors)
+    const denied = await takeBudget(env, ip)
+    if (denied) return json({ error: denied === 'global' ? 'budget_exhausted' : 'visitor_daily_limit' }, 429, cors)
 
     try {
       const result = await scout(jd, env)

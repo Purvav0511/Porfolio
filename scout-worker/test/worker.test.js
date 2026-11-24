@@ -2,7 +2,7 @@
 // run offline and never spend credits. Run with `npm test`.
 import { test, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
-import worker from '../src/index.js'
+import worker, { Budget } from '../src/index.js'
 
 const SITE = 'https://purvav0511.github.io'
 const JD = 'Data Engineer. Build batch pipelines in Python and SQL on AWS with Airflow, partner with analysts, own data quality.'
@@ -14,9 +14,24 @@ let claudeCalls
 function limiter(allow = true) {
   return { limit: async () => ({ success: allow }) }
 }
-function kv(initial = {}) {
-  const store = new Map(Object.entries(initial))
-  return { store, get: async k => store.get(k) ?? null, put: async (k, v) => { store.set(k, v) } }
+// In-memory stand-in for Durable Object storage, driving the real Budget class.
+function doStorage() {
+  const store = new Map()
+  let alarm = null
+  return {
+    store,
+    get: async k => store.get(k),
+    put: async entries => { for (const [k, v] of Object.entries(entries)) store.set(k, v) },
+    list: async () => new Map(store),
+    delete: async keys => { for (const k of keys) store.delete(k) },
+    getAlarm: async () => alarm,
+    setAlarm: async t => { alarm = t },
+  }
+}
+function budgetNamespace() {
+  const storage = doStorage()
+  const instance = new Budget({ storage })
+  return { storage, instance, idFromName: name => name, get: () => ({ fetch: (url, init) => instance.fetch(new Request(url, init)) }) }
 }
 function env(overrides = {}) {
   return {
@@ -24,10 +39,11 @@ function env(overrides = {}) {
     ALLOWED_ORIGINS: `${SITE},http://localhost:5173`,
     MODEL: 'claude-opus-5-5',
     DAILY_LIMIT: '3',
+    PER_VISITOR_DAILY_LIMIT: '2',
     PER_IP_LIMITER: limiter(),
     GLOBAL_LIMITER: limiter(),
     HEALTH_LIMITER: limiter(),
-    BUDGET: kv(),
+    BUDGET: budgetNamespace(),
     ...overrides,
   }
 }
@@ -46,9 +62,9 @@ const messageOk = () => [200, {
 }]
 const apiError = (status, type) => [status, { type: 'error', error: { type, message: type } }]
 
-const scoutReq = (body = { jd: JD }, origin = SITE) => new Request('https://w.dev/scout', {
+const scoutReq = (body = { jd: JD }, origin = SITE, ip = '203.0.113.7') => new Request('https://w.dev/scout', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json', ...(origin ? { Origin: origin } : {}) },
+  headers: { 'Content-Type': 'application/json', 'CF-Connecting-IP': ip, ...(origin ? { Origin: origin } : {}) },
   body: typeof body === 'string' ? body : JSON.stringify(body),
 })
 const call = async (req, e = env()) => {
@@ -87,7 +103,7 @@ test('validates input before spending rate limit or budget', async () => {
   assert.equal((await call(scoutReq({ jd: 'x'.repeat(15001) }), e)).body.error, 'too_long')
   assert.equal((await call(scoutReq('{not json'), e)).body.error, 'bad_request')
   assert.equal(limited, 0)
-  assert.equal(e.BUDGET.store.size, 0)
+  assert.equal(e.BUDGET.storage.store.size, 0)
   assert.equal(claudeCalls.length, 0)
 })
 
@@ -97,13 +113,43 @@ test('rate limits per visitor and globally', async () => {
   assert.equal(claudeCalls.length, 0)
 })
 
-test('stops calling Claude once the daily budget is spent', async () => {
+test('caps paid calls per visitor per day', async () => {
   const e = env()
-  for (let i = 0; i < 3; i++) assert.equal((await call(scoutReq(), e)).status, 200)
+  for (let i = 0; i < 2; i++) assert.equal((await call(scoutReq(), e)).status, 200)
   const r = await call(scoutReq(), e)
+  assert.equal(r.status, 429)
+  assert.equal(r.body.error, 'visitor_daily_limit')
+  // A different visitor is unaffected.
+  assert.equal((await call(scoutReq(undefined, SITE, '198.51.100.9'), e)).status, 200)
+  assert.equal(claudeCalls.length, 3)
+})
+
+test('stops calling Claude once the global daily budget is spent', async () => {
+  const e = env()
+  const ips = ['192.0.2.1', '192.0.2.2', '192.0.2.3', '192.0.2.4']
+  for (const ip of ips.slice(0, 3)) assert.equal((await call(scoutReq(undefined, SITE, ip), e)).status, 200)
+  const r = await call(scoutReq(undefined, SITE, ips[3]), e)
   assert.equal(r.status, 429)
   assert.equal(r.body.error, 'budget_exhausted')
   assert.equal(claudeCalls.length, 3)
+})
+
+test('budget is atomic under concurrent requests', async () => {
+  const e = env({ PER_VISITOR_DAILY_LIMIT: '100' })
+  const results = await Promise.all(Array.from({ length: 10 }, (_, i) => call(scoutReq(undefined, SITE, `192.0.2.${i}`), e)))
+  assert.equal(results.filter(r => r.status === 200).length, 3)
+  assert.equal(claudeCalls.length, 3)
+})
+
+test('budget stores hashed visitors only, and its alarm clears past days', async () => {
+  const e = env()
+  await call(scoutReq(), e)
+  const keys = [...e.BUDGET.storage.store.keys()]
+  assert.ok(keys.every(k => !k.includes('203.0.113.7')))
+  e.BUDGET.storage.store.set('g:2000-01-01', 99)
+  e.BUDGET.storage.store.set('v:2000-01-01:abc', 5)
+  await e.BUDGET.instance.alarm()
+  assert.deepEqual([...e.BUDGET.storage.store.keys()].sort(), keys.sort())
 })
 
 test('reports not_configured when the API key secret is missing', async () => {

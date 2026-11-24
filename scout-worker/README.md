@@ -4,7 +4,7 @@ Cloudflare Worker behind the portfolio's "Scout me for your role" section. It ta
 
 - `src/profile.js` is the scout's only source of facts. Update it alongside `src/data/content.js` and the résumé.
 - `src/prompt.js` holds the system prompt and the JSON schema for the report.
-- Requests are limited to the site's origin, size-checked, rate-limited per visitor and globally, and capped at `DAILY_LIMIT` paid reports per UTC day (counter in the `BUDGET` KV namespace). The API key lives in a Worker secret.
+- Requests are limited to the site's origin, size-checked, rate-limited per visitor and globally, and capped per UTC day at `DAILY_LIMIT` paid reports overall and `PER_VISITOR_DAILY_LIMIT` per visitor. The counters live in the `Budget` Durable Object (`src/budget.js`), which is atomic, so the caps hold under bursts; visitor IPs are stored only as hashes and cleared daily. The API key lives in a Worker secret.
 - `GET /health` checks the API key and model by looking up the model, which spends no tokens. The repo's Monitor workflow calls it every 30 minutes.
 
 ## Setup
