@@ -1,0 +1,95 @@
+# Alerts you when something breaks, by opening a GitHub issue (you get an email and a GitHub mobile
+# push) and closing it automatically once things recover.
+#   - Every 30 minutes, and after each deploy: free live checks of the site and the Scout Worker
+#     (.github/scripts/monitor.mjs). No Claude credits are spent.
+#   - When CI or a deploy fails on main: an issue naming the failed workflow.
+# GitHub pauses scheduled workflows after 60 days without repo activity; re-enable it in the Actions tab.
+name: Monitor
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['CI', 'Deploy to GitHub Pages', 'Deploy Scout Worker']
+    branches: ['main']
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  GH_REPO: ${{ github.repository }}
+  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+jobs:
+  workflow-failure:
+    name: Alert on failed CI or deploy
+    if: github.event_name == 'workflow_run'
+    runs-on: ubuntu-latest
+    env:
+      WORKFLOW: ${{ github.event.workflow_run.name }}
+      CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+      FAILED_RUN: ${{ github.event.workflow_run.html_url }}
+      COMMIT: ${{ github.event.workflow_run.head_commit.message }}
+    steps:
+      - name: Open, update or close the issue for this workflow
+        run: |
+          title="❌ $WORKFLOW failed on main"
+          gh label create workflow-failed --color D93F0B --description "Opened by the Monitor workflow" 2>/dev/null || true
+          n=$(gh issue list --label workflow-failed --state open --json number,title | jq -r --arg t "$title" 'map(select(.title == $t))[0].number // empty')
+          if [ "$CONCLUSION" = "failure" ] || [ "$CONCLUSION" = "timed_out" ]; then
+            printf '**%s** finished with `%s`.\n\nRun: %s\nCommit: %s\n\nThis issue closes itself when the workflow next succeeds on main.\n' \
+              "$WORKFLOW" "$CONCLUSION" "$FAILED_RUN" "$(echo "$COMMIT" | head -1)" > body.md
+            if [ -z "$n" ]; then
+              gh issue create --title "$title" --label workflow-failed --assignee "${{ github.repository_owner }}" --body-file body.md
+            else
+              gh issue comment "$n" --body-file body.md
+            fi
+          elif [ "$CONCLUSION" = "success" ] && [ -n "$n" ]; then
+            gh issue close "$n" --comment "✅ $WORKFLOW succeeded again: $FAILED_RUN"
+          fi
+
+  live-checks:
+    name: Live site and Worker checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          sparse-checkout: .github/scripts
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Give a fresh deploy time to propagate
+        if: github.event_name == 'workflow_run'
+        run: sleep 60
+      - name: Run checks
+        id: check
+        continue-on-error: true
+        run: node .github/scripts/monitor.mjs
+      - name: Open or update the alert issue
+        if: steps.check.outcome == 'failure'
+        run: |
+          gh label create site-down --color B60205 --description "Opened by the Monitor workflow" 2>/dev/null || true
+          { cat monitor-report.md; printf '\n\n[Run log](%s) · This issue updates on each failed check and closes itself on recovery.\n' "$RUN_URL"; } > body.md
+          n=$(gh issue list --label site-down --state open --json number --jq '.[0].number // empty')
+          if [ -z "$n" ]; then
+            gh issue create --title "🚨 Live portfolio check failing" --label site-down --assignee "${{ github.repository_owner }}" --body-file body.md
+          else
+            # Edit rather than comment, so a long outage doesn't email you every 30 minutes.
+            gh issue edit "$n" --body-file body.md
+          fi
+      - name: Close the alert issue on recovery
+        if: steps.check.outcome == 'success'
+        run: |
+          n=$(gh issue list --label site-down --state open --json number --jq '.[0].number // empty')
+          if [ -n "$n" ]; then
+            { echo "✅ Recovered."; echo; cat monitor-report.md; } > body.md
+            gh issue close "$n" --comment "$(cat body.md)"
+          fi

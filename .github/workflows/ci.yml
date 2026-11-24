@@ -1,0 +1,60 @@
+# Checks every pull request and push to main: the site builds and lints, the Worker's tests pass and
+# it bundles for Cloudflare, and no dependency has a known high-severity vulnerability.
+# Runs offline against stubs, so it never spends Claude credits.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Site (lint, build, audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Check the build output
+        run: |
+          grep -q 'http-equiv="Content-Security-Policy"' dist/index.html || { echo "::error::CSP meta tag missing from dist/index.html"; exit 1; }
+          test -f dist/resume.pdf || { echo "::error::resume.pdf missing from the build"; exit 1; }
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+  worker:
+    name: Scout Worker (test, bundle, audit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scout-worker
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: scout-worker/package-lock.json
+      - run: npm ci
+      - name: Unit tests
+        run: npm test
+      - name: Bundle for Cloudflare (dry run)
+        run: npm run check
+      - name: Audit dependencies
+        run: npm audit --audit-level=high

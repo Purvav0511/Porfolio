@@ -10,6 +10,12 @@ preview_urls = false
 [vars]
 ALLOWED_ORIGINS = "https://purvav0511.github.io,http://localhost:5173"
 MODEL = "claude-opus-5-5"
+# Hard cap on paid Claude calls per UTC day, across all visitors
+DAILY_LIMIT = "150"
+
+# Daily report counter for DAILY_LIMIT. Wrangler creates the namespace on first deploy.
+[[kv_namespaces]]
+binding = "BUDGET"
 
 # 5 reports per minute per visitor
 [[ratelimits]]
@@ -25,4 +31,12 @@ name = "GLOBAL_LIMITER"
 namespace_id = "1002"
   [ratelimits.simple]
   limit = 30
+  period = 60
+
+# /health is called by the uptime monitor; this keeps it from being used to hammer the Claude API
+[[ratelimits]]
+name = "HEALTH_LIMITER"
+namespace_id = "1003"
+  [ratelimits.simple]
+  limit = 10
   period = 60
