@@ -13,7 +13,7 @@ export const profile = {
   primaryRole: 'SDE',
   secondaryRoles: 'DE · MLE',
   roles: ['Software Engineer', 'Data Engineer', 'ML Engineer'],
-  lede: 'Software Engineer at Leidos on the SSA Anti-Fraud program, turning legacy fraud models into Python data pipelines on AWS that move 10M+ records a day. NYU M.S. Computer Engineering.',
+  lede: 'Software Engineer with two years on the SSA Anti-Fraud program at Leidos, turning legacy fraud models into Python data pipelines on AWS that move 10M+ records a day. NYU M.S. Computer Engineering.',
   status: 'Open to new opportunities · Brooklyn, NY',
   email: 'purvavpunyani@gmail.com',
   linkedin: 'https://linkedin.com/in/purvavpunyani',
@@ -32,7 +32,7 @@ export const cardStats = [
 ]
 
 export const summary = {
-  lead: 'Software Engineer with two years full-time on the SSA Anti-Fraud program at Leidos, modernising legacy SAS fraud models into Python data pipelines on AWS that move 10M+ records a day. I scope work directly with non-technical stakeholders and own it through production.',
+  lead: 'Software Engineer with two years full-time on the SSA Anti-Fraud program at Leidos (Sep 2024 – Oct 2026), modernising legacy SAS fraud models into Python data pipelines on AWS that move 10M+ records a day. I scope work directly with non-technical stakeholders and own it through production.',
   more: 'Before that: data science at GreenPortfolio, client automation at HighRadius, computer vision at Grroom, and AI products built at hackathons. M.S. Computer Engineering from NYU, B.Tech Computer Science from KIIT.',
   targets: [
     { code: 'SDE', text: 'Backend services, APIs, gRPC, FastAPI' },
@@ -50,20 +50,21 @@ export const strengths = [
   { icon: 'people', title: 'Stakeholder ownership', text: 'Scoped data needs with SSA analysts for 3 fraud models', role: 'ALL' },
 ]
 
-// Experience, rendered as a squad. line: Now | Then | Academy
+// Experience, rendered as a squad. line: Now | Then | Academy (a line with no entries is hidden)
 export const squad = [
   {
-    line: 'Now', tier: 'gold', pos: 'DE', sub: 'SDE', co: 'Leidos', logo: leidos,
-    role: 'Software Engineer', when: 'Sep 2024 — Present', foot: '2024 — Now',
-    title: 'Software Engineer · Data Architect/Engineer', org: 'Leidos Inc. · SSA Anti-Fraud program',
+    line: 'Then', tier: 'gold', pos: 'DE', sub: 'SDE', co: 'Leidos', logo: leidos,
+    role: 'Software Engineer', when: 'Sep 2024 — Oct 2026', foot: '2024 — 26',
+    title: 'Software Engineer · Data Architect/Engineer', org: 'Leidos Inc. · SSA OSSNAP, then Anti-Fraud program',
     points: [
       'Ported legacy SAS fraud models to Python, building pre-fraud and sampling modules and retiring 5 services and 2 pipelines.',
       'Built an AWS Athena batch pipeline (Parquet, bulk COPY) loading 21M telecom records a month in 30 minutes.',
       'Rebuilt a claims fraud model on payment data after a legacy source was retired, cutting its inputs from 12 tables to 3.',
-      'Keep 10M+ records a day flowing to fraud models via Airflow/Lambda batch jobs on AWS EC2.',
+      'Kept 10M+ records a day flowing to fraud models via Airflow/Lambda batch jobs on AWS EC2.',
       'Built a service that checks each job after its expected finish, flagging late or failed runs across 20+ production models.',
+      'Ran 300+ Selenium regression scenarios on the SSA OSSNAP web application, reaching a 99%+ pass rate after bug fixes.',
     ],
-    stack: ['Python', 'AWS', 'Athena', 'Airflow', 'Lambda', 'Greenplum', 'Postgres', 'SQL Server'],
+    stack: ['Python', 'AWS', 'Athena', 'Airflow', 'Lambda', 'Greenplum', 'Postgres', 'SQL Server', 'Selenium'],
   },
   {
     line: 'Then', tier: 'silver', pos: 'DS', sub: 'ETL · ML', co: 'GreenPortfolio', logo: greenportfolio, logoFill: true,
@@ -125,7 +126,15 @@ export const squadLines = [
 ]
 
 // `result` supports a leading bold phrase via **double asterisks**.
+// `link` overrides the default "Code" link, e.g. for private code with a public product site.
 export const projects = [
+  {
+    title: 'Plant Advisor', event: 'Ordotech · Oct 2026 – present', roles: ['SDE', 'MLE'], tint: 'rgba(240,160,70,.45)',
+    text: 'Turns a technician\u2019s phone photos of a worn industrial part into an engineer-reviewed recommendation from the supplier\u2019s own catalog, routed to the right salesperson. Designed and built solo, end to end; the code is private while it\u2019s in development.',
+    result: '**6-stage** LLM workflow returning rule-checked picks in **24–47 s**, used on 50 cases by 4 client staff; failed jobs resume from checkpoints, and **~370 tests** gate every release',
+    stack: 'Python · FastAPI · Postgres · Next.js · Claude',
+    link: { href: 'https://ordotech.pages.dev', label: 'Product site' },
+  },
   {
     title: 'AI Scout for Recruiters', event: 'This site · 2026', roles: ['SDE', 'MLE'], tint: 'rgba(95,209,139,.4)',
     text: 'Paste a job description and Claude writes a scouting report: requirements matched with evidence from my record, honest gaps, and interview questions. Runs on a Cloudflare Worker with rate limits, prompt-injection handling, and structured outputs.',
@@ -162,6 +171,13 @@ export const projects = [
     code: 'https://github.com/Purvav0511/document-ai-system',
   },
   {
+    title: 'Rebel Hearts & Paws', event: 'Side project for a friend · Oct 2026', roles: ['SDE'], tint: 'rgba(255,130,170,.4)',
+    text: 'Small website for a friend\u2019s pet-care business: services, gallery, reviews, and an inquiry form, plus an owner portal with Google sign-in and Calendar that she uses daily for invoices.',
+    result: 'Passed **Google\u2019s OAuth review** to ship Google Login and Calendar to production; **48 visitors** in its first 3 weeks',
+    stack: 'Next.js · Google Calendar API · OAuth · Netlify',
+    link: { href: 'https://rhppservice.com', label: 'Live site' },
+  },
+  {
     title: 'Data Poisoning Detection', event: 'NYU paper · Dec 2023', roles: ['MLE'], tint: 'rgba(212,175,90,.45)',
     text: 'Co-authored study of 4 poisoning attacks (Convex Polytope, Feature Collision, Hidden-Trigger Backdoor, MetaPoison) on a VGG16 CIFAR-10 model, with anomaly-based detection.',
     result: 'Isolation Forest detection reached **73%** vs **67%** for One-Class SVM; poisoning cut accuracy to as low as 15%',
@@ -184,7 +200,7 @@ export const projectFilters = [
 ]
 
 export const resumeFacts = [
-  { value: '4', label: 'Companies' },
+  { value: '3', label: 'Companies' },
   { value: '2', label: 'Degrees' },
   { value: '1', label: 'Page' },
 ]

@@ -11,7 +11,7 @@ export default function Resume() {
         <div className="panel resume rv">
           <div className="paper" aria-hidden="true">
             <div className="n">{profile.first} {profile.last}</div>
-            <div className="r">Software Engineer · Leidos</div>
+            <div className="r">Software · Data · ML Engineer</div>
             {sections.map((lines, i) => (
               <div key={i}>
                 <div className="h" />
@@ -21,7 +21,7 @@ export default function Resume() {
           </div>
           <div>
             <h3>One page.<br /><span className="metal-text">Everything that matters.</span></h3>
-            <p>Leidos, GreenPortfolio, HighRadius, and Grroom, plus projects, skills, and education, in a one-page, ATS-readable PDF.</p>
+            <p>Leidos, GreenPortfolio, and HighRadius, plus projects, skills, and education, in a one-page, ATS-readable PDF.</p>
             <div className="facts">
               {resumeFacts.map(f => <div key={f.label}><b className="metal-text">{f.value}</b><span>{f.label}</span></div>)}
             </div>

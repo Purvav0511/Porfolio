@@ -26,7 +26,9 @@ export default function Highlights() {
           ))}
         </div>
         <div className="hl-grid">
-          {projects.map(p => (
+          {projects.map(p => {
+            const link = p.link || { href: p.code, label: 'Code' }
+            return (
             <article key={p.title} className={`panel hl${filter !== 'all' && !p.roles.includes(filter) ? ' hide' : ''}`}>
               <div className="thumb">
                 <div className="gen" style={{ '--c': p.tint }} aria-hidden="true">{initials(p.title)}</div>
@@ -39,11 +41,12 @@ export default function Highlights() {
                 <div className="result"><Rich text={p.result} /></div>
                 <div className="meta">
                   <span>{p.stack}</span>
-                  <a href={p.code} target="_blank" rel="noopener noreferrer" aria-label={`${p.title} source code on GitHub`}>Code ↗</a>
+                  <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`${p.title}: ${link.label === 'Code' ? 'source code on GitHub' : link.label}`}>{link.label} ↗</a>
                 </div>
               </div>
             </article>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
