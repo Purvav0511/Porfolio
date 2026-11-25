@@ -11,7 +11,7 @@ export default function Resume() {
         <div className="panel resume rv">
           <div className="paper" aria-hidden="true">
             <div className="n">{profile.first} {profile.last}</div>
-            <div className="r">Software Engineer · Leidos</div>
+            <div className="r">Software · Data · ML Engineer</div>
             {sections.map((lines, i) => (
               <div key={i}>
                 <div className="h" />

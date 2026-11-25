@@ -13,7 +13,7 @@ export const profile = {
   primaryRole: 'SDE',
   secondaryRoles: 'DE · MLE',
   roles: ['Software Engineer', 'Data Engineer', 'ML Engineer'],
-  lede: 'Software Engineer at Leidos on the SSA Anti-Fraud program, turning legacy fraud models into Python data pipelines on AWS that move 10M+ records a day. NYU M.S. Computer Engineering.',
+  lede: 'Software Engineer with two years on the SSA Anti-Fraud program at Leidos, turning legacy fraud models into Python data pipelines on AWS that move 10M+ records a day. NYU M.S. Computer Engineering.',
   status: 'Open to new opportunities · Brooklyn, NY',
   email: 'purvavpunyani@gmail.com',
   linkedin: 'https://linkedin.com/in/purvavpunyani',
@@ -32,7 +32,7 @@ export const cardStats = [
 ]
 
 export const summary = {
-  lead: 'Software Engineer with two years full-time on the SSA Anti-Fraud program at Leidos, modernising legacy SAS fraud models into Python data pipelines on AWS that move 10M+ records a day. I scope work directly with non-technical stakeholders and own it through production.',
+  lead: 'Software Engineer with two years full-time on the SSA Anti-Fraud program at Leidos (Sep 2024 – Oct 2026), modernising legacy SAS fraud models into Python data pipelines on AWS that move 10M+ records a day. I scope work directly with non-technical stakeholders and own it through production.',
   more: 'Before that: data science at GreenPortfolio, client automation at HighRadius, computer vision at Grroom, and AI products built at hackathons. M.S. Computer Engineering from NYU, B.Tech Computer Science from KIIT.',
   targets: [
     { code: 'SDE', text: 'Backend services, APIs, gRPC, FastAPI' },
@@ -50,17 +50,17 @@ export const strengths = [
   { icon: 'people', title: 'Stakeholder ownership', text: 'Scoped data needs with SSA analysts for 3 fraud models', role: 'ALL' },
 ]
 
-// Experience, rendered as a squad. line: Now | Then | Academy
+// Experience, rendered as a squad. line: Now | Then | Academy (a line with no entries is hidden)
 export const squad = [
   {
-    line: 'Now', tier: 'gold', pos: 'DE', sub: 'SDE', co: 'Leidos', logo: leidos,
-    role: 'Software Engineer', when: 'Sep 2024 — Present', foot: '2024 — Now',
+    line: 'Then', tier: 'gold', pos: 'DE', sub: 'SDE', co: 'Leidos', logo: leidos,
+    role: 'Software Engineer', when: 'Sep 2024 — Oct 2026', foot: '2024 — 26',
     title: 'Software Engineer · Data Architect/Engineer', org: 'Leidos Inc. · SSA Anti-Fraud program',
     points: [
       'Ported legacy SAS fraud models to Python, building pre-fraud and sampling modules and retiring 5 services and 2 pipelines.',
       'Built an AWS Athena batch pipeline (Parquet, bulk COPY) loading 21M telecom records a month in 30 minutes.',
       'Rebuilt a claims fraud model on payment data after a legacy source was retired, cutting its inputs from 12 tables to 3.',
-      'Keep 10M+ records a day flowing to fraud models via Airflow/Lambda batch jobs on AWS EC2.',
+      'Kept 10M+ records a day flowing to fraud models via Airflow/Lambda batch jobs on AWS EC2.',
       'Built a service that checks each job after its expected finish, flagging late or failed runs across 20+ production models.',
     ],
     stack: ['Python', 'AWS', 'Athena', 'Airflow', 'Lambda', 'Greenplum', 'Postgres', 'SQL Server'],

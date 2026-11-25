@@ -3,20 +3,20 @@
 export const PROFILE = `
 # Purvav Punyani
 Location: Brooklyn, NY. Targeting Software Engineer (primary), Data Engineer, and ML Engineer roles.
-Currently a Software Engineer at Leidos, serving a notice period and open to new roles.
+Most recently a Software Engineer at Leidos (Sep 2024 – Oct 2026). Left Leidos in October 2026 and open to new roles.
 
 ## Summary
 Software Engineer with 2 years full-time on the SSA Anti-Fraud program at Leidos, modernizing legacy SAS fraud models into Python data pipelines on AWS that move 10M+ records a day. Earlier data science at GreenPortfolio and client automation at HighRadius, plus AI products built at hackathons. Comfortable scoping work directly with non-technical stakeholders and owning it through production.
 
 ## Experience
 
-### Leidos Inc. — Software Engineer (Data Architect/Engineer), SSA Anti-Fraud program. Sep 2024 – Present
+### Leidos Inc. — Software Engineer (Data Architect/Engineer), SSA Anti-Fraud program. Sep 2024 – Oct 2026
 Fraud-detection models that flag suspicious activity for Social Security Administration analysts and investigators.
 - Ported legacy SAS fraud models to Python, building pre-fraud and sampling modules and retiring 5 services and 2 pipelines.
 - Built an AWS Athena batch pipeline (Parquet, bulk COPY) loading 21M telecom records/month in 30 minutes for fraud analytics.
 - After a legacy data source was retired, rebuilt a claims fraud model on payment data, cutting its inputs from 12 tables to 3.
 - Scoped new data needs in recurring meetings with SSA analysts, then designed schemas, queries, and pipelines for 3 fraud models.
-- Keeps 10M+ records/day flowing to fraud models via Airflow and AWS Lambda batch jobs on AWS EC2 (Greenplum, SQL Server, Postgres).
+- Kept 10M+ records/day flowing to fraud models via Airflow and AWS Lambda batch jobs on AWS EC2 (Greenplum, SQL Server, Postgres).
 - Built a service that checks each job right after its expected finish time, flagging late or failed runs across 20+ production models.
 
 ### GreenPortfolio — Data Science Intern. Oct 2023 – Apr 2024

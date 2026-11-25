@@ -18,7 +18,7 @@ export default function Squad() {
               <rect x="30" y="2" width="40" height="11" /><rect x="30" y="57" width="40" height="11" />
             </svg>
             <div className="formation">
-              {squadLines.map(line => (
+              {squadLines.filter(line => squad.some(item => item.line === line.id)).map(line => (
                 <div key={line.id} style={{ display: 'contents' }}>
                   <div className="lbl">{line.label}</div>
                   <div className="row">
