@@ -1,0 +1,19 @@
+# Weekly dependency and GitHub Actions updates, grouped so each ecosystem is one PR.
+# CI runs on each Dependabot PR, so a bad update shows up red before you merge it.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      site: { patterns: ['*'], update-types: [minor, patch] }
+  - package-ecosystem: npm
+    directory: /scout-worker
+    schedule: { interval: weekly }
+    groups:
+      worker: { patterns: ['*'], update-types: [minor, patch] }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      actions: { patterns: ['*'] }

@@ -10,6 +10,18 @@ preview_urls = false
 [vars]
 ALLOWED_ORIGINS = "https://purvav0511.github.io,http://localhost:5173"
 MODEL = "claude-opus-5-5"
+# Hard caps on paid Claude calls per UTC day: across all visitors, and per visitor
+DAILY_LIMIT = "150"
+PER_VISITOR_DAILY_LIMIT = "10"
+
+# Atomic daily counters for the caps above (src/budget.js). Durable Objects are on the free plan.
+[[durable_objects.bindings]]
+name = "BUDGET"
+class_name = "Budget"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Budget"]
 
 # 5 reports per minute per visitor
 [[ratelimits]]
@@ -25,4 +37,12 @@ name = "GLOBAL_LIMITER"
 namespace_id = "1002"
   [ratelimits.simple]
   limit = 30
+  period = 60
+
+# /health is called by the uptime monitor; this keeps it from being used to hammer the Claude API
+[[ratelimits]]
+name = "HEALTH_LIMITER"
+namespace_id = "1003"
+  [ratelimits.simple]
+  limit = 10
   period = 60
