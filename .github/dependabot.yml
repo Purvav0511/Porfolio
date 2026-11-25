@@ -1,19 +1,38 @@
-# Weekly dependency and GitHub Actions updates, grouped so each ecosystem is one PR.
-# CI runs on each Dependabot PR, so a bad update shows up red before you merge it.
+# Monthly dependency and GitHub Actions updates, one grouped PR per ecosystem, minor and patch only.
+# Major upgrades (React, Vite, ESLint, the Anthropic SDK, actions/*) change APIs and need code changes,
+# so they're done deliberately rather than as automatic PRs. Security fixes still arrive as
+# Dependabot alerts, and CI's `npm audit` fails on any high-severity advisory.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
-    schedule: { interval: weekly }
+    schedule: { interval: monthly }
+    open-pull-requests-limit: 2
     groups:
       site: { patterns: ['*'], update-types: [minor, patch] }
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+      # 0.x packages: a "minor" bump is a breaking change (three's API, react-refresh needs ESLint 9).
+      - dependency-name: three
+        update-types: ['version-update:semver-minor']
+      - dependency-name: eslint-plugin-react-refresh
+        update-types: ['version-update:semver-minor']
   - package-ecosystem: npm
     directory: /scout-worker
-    schedule: { interval: weekly }
+    schedule: { interval: monthly }
+    open-pull-requests-limit: 2
     groups:
       worker: { patterns: ['*'], update-types: [minor, patch] }
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
-    schedule: { interval: weekly }
+    schedule: { interval: monthly }
+    open-pull-requests-limit: 2
     groups:
-      actions: { patterns: ['*'] }
+      actions: { patterns: ['*'], update-types: [minor, patch] }
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
