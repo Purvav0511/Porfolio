@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "eval": "node evals/run.mjs"
+    "eval": "node evals/run.mjs",
+    "test": "node --test test/*.test.js",
+    "check": "wrangler deploy --dry-run --outdir .wrangler/dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.132.1"

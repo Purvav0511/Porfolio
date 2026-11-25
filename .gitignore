@@ -27,3 +27,4 @@ dist
 
 # Design prototypes (local only)
 design-explorations
+.playwright-mcp

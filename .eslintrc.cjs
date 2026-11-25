@@ -11,6 +11,8 @@ module.exports = {
   overrides: [
     // The scout Worker and its eval script run on Cloudflare and Node, not in the browser.
     { files: ['scout-worker/**'], env: { browser: false, node: true, serviceworker: true, es2022: true } },
+    // Build config and CI scripts run on Node.
+    { files: ['vite.config.js', '.github/scripts/**'], env: { browser: false, node: true, es2022: true } },
   ],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.3' } },
