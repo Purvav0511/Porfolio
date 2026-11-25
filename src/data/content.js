@@ -55,15 +55,16 @@ export const squad = [
   {
     line: 'Then', tier: 'gold', pos: 'DE', sub: 'SDE', co: 'Leidos', logo: leidos,
     role: 'Software Engineer', when: 'Sep 2024 — Oct 2026', foot: '2024 — 26',
-    title: 'Software Engineer · Data Architect/Engineer', org: 'Leidos Inc. · SSA Anti-Fraud program',
+    title: 'Software Engineer · Data Architect/Engineer', org: 'Leidos Inc. · SSA OSSNAP, then Anti-Fraud program',
     points: [
       'Ported legacy SAS fraud models to Python, building pre-fraud and sampling modules and retiring 5 services and 2 pipelines.',
       'Built an AWS Athena batch pipeline (Parquet, bulk COPY) loading 21M telecom records a month in 30 minutes.',
       'Rebuilt a claims fraud model on payment data after a legacy source was retired, cutting its inputs from 12 tables to 3.',
       'Kept 10M+ records a day flowing to fraud models via Airflow/Lambda batch jobs on AWS EC2.',
       'Built a service that checks each job after its expected finish, flagging late or failed runs across 20+ production models.',
+      'Ran 300+ Selenium regression scenarios on the SSA OSSNAP web application, reaching a 99%+ pass rate after bug fixes.',
     ],
-    stack: ['Python', 'AWS', 'Athena', 'Airflow', 'Lambda', 'Greenplum', 'Postgres', 'SQL Server'],
+    stack: ['Python', 'AWS', 'Athena', 'Airflow', 'Lambda', 'Greenplum', 'Postgres', 'SQL Server', 'Selenium'],
   },
   {
     line: 'Then', tier: 'silver', pos: 'DS', sub: 'ETL · ML', co: 'GreenPortfolio', logo: greenportfolio, logoFill: true,
@@ -125,7 +126,15 @@ export const squadLines = [
 ]
 
 // `result` supports a leading bold phrase via **double asterisks**.
+// `link` overrides the default "Code" link, e.g. for private code with a public product site.
 export const projects = [
+  {
+    title: 'Plant Advisor', event: 'Ordotech · Oct 2026 – present', roles: ['SDE', 'MLE'], tint: 'rgba(240,160,70,.45)',
+    text: 'Turns a technician\u2019s phone photos of a worn industrial part into an engineer-reviewed recommendation from the supplier\u2019s own catalog, routed to the right salesperson. Designed and built solo, end to end; the code is private while it\u2019s in development.',
+    result: '**6-stage** LLM workflow returning rule-checked picks in **24–47 s**, used on 50 cases by 4 client staff; failed jobs resume from checkpoints, and **~370 tests** gate every release',
+    stack: 'Python · FastAPI · Postgres · Next.js · Claude',
+    link: { href: 'https://ordotech.pages.dev', label: 'Product site' },
+  },
   {
     title: 'AI Scout for Recruiters', event: 'This site · 2026', roles: ['SDE', 'MLE'], tint: 'rgba(95,209,139,.4)',
     text: 'Paste a job description and Claude writes a scouting report: requirements matched with evidence from my record, honest gaps, and interview questions. Runs on a Cloudflare Worker with rate limits, prompt-injection handling, and structured outputs.',
@@ -160,6 +169,13 @@ export const projects = [
     result: '**4 formats** with format-specific chunking; **incremental ingestion** skips unchanged files; batched, rate-limited embedding',
     stack: 'Python · LangChain · ChromaDB · FastAPI',
     code: 'https://github.com/Purvav0511/document-ai-system',
+  },
+  {
+    title: 'Rebel Hearts & Paws', event: 'Side project for a friend · Oct 2026', roles: ['SDE'], tint: 'rgba(255,130,170,.4)',
+    text: 'Small website for a friend\u2019s pet-care business: services, gallery, reviews, and an inquiry form, plus an owner portal with Google sign-in and Calendar that she uses daily for invoices.',
+    result: 'Passed **Google\u2019s OAuth review** to ship Google Login and Calendar to production; **48 visitors** in its first 3 weeks',
+    stack: 'Next.js · Google Calendar API · OAuth · Netlify',
+    link: { href: 'https://rhppservice.com', label: 'Live site' },
   },
   {
     title: 'Data Poisoning Detection', event: 'NYU paper · Dec 2023', roles: ['MLE'], tint: 'rgba(212,175,90,.45)',
