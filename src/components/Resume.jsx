@@ -21,7 +21,7 @@ export default function Resume() {
           </div>
           <div>
             <h3>One page.<br /><span className="metal-text">Everything that matters.</span></h3>
-            <p>Leidos, GreenPortfolio, HighRadius, and Grroom, plus projects, skills, and education, in a one-page, ATS-readable PDF.</p>
+            <p>Leidos, GreenPortfolio, and HighRadius, plus projects, skills, and education, in a one-page, ATS-readable PDF.</p>
             <div className="facts">
               {resumeFacts.map(f => <div key={f.label}><b className="metal-text">{f.value}</b><span>{f.label}</span></div>)}
             </div>

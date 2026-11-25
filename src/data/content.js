@@ -184,7 +184,7 @@ export const projectFilters = [
 ]
 
 export const resumeFacts = [
-  { value: '4', label: 'Companies' },
+  { value: '3', label: 'Companies' },
   { value: '2', label: 'Degrees' },
   { value: '1', label: 'Page' },
 ]
